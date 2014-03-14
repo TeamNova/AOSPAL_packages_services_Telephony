@@ -303,6 +303,7 @@ public class CallFeaturesSetting extends PreferenceActivity
     private ListPreference mFlipAction;
     private CheckBoxPreference mEnableForwardLookup;
     private CheckBoxPreference mEnablePeopleLookup;
+    private CheckBoxPreference mEnableReverseLookup;
     private ListPreference mChooseForwardLookupProvider;
     private ListPreference mChoosePeopleLookupProvider;
     private ListPreference mChooseReverseLookupProvider;
@@ -645,6 +646,14 @@ public class CallFeaturesSetting extends PreferenceActivity
             handleSipCallOptionsChange(objValue);
         }else if (preference == mFlipAction) {
             updateFlipActionSummary((String) objValue);
+        } else if (preference == mEnableForwardLookup
+                || preference == mEnablePeopleLookup
+                || preference == mEnableReverseLookup) {
+            saveLookupProviderSwitch(preference, (Boolean) objValue);
+        } else if (preference == mChooseForwardLookupProvider
+                || preference == mChoosePeopleLookupProvider
+                || preference == mChooseReverseLookupProvider) {
+            saveLookupProviderSetting(preference, (String) objValue);
         }
         // always let the preference setting proceed.
         return true;
@@ -1722,6 +1731,32 @@ public class CallFeaturesSetting extends PreferenceActivity
         mNonIntrusiveInCall = (CheckBoxPreference) findPreference(BUTTON_NON_INTRUSIVE_INCALL_KEY);
         mNonIntrusiveInCall.setChecked(Settings.System.getInt(getContentResolver(),
                 Settings.System.NON_INTRUSIVE_INCALL, 1) == 0 ? false : true);
+
+        mEnableForwardLookup = (CheckBoxPreference)
+                findPreference(SWITCH_ENABLE_FORWARD_LOOKUP);
+        mEnablePeopleLookup = (CheckBoxPreference)
+                findPreference(SWITCH_ENABLE_PEOPLE_LOOKUP);
+        mEnableReverseLookup = (CheckBoxPreference)
+                findPreference(SWITCH_ENABLE_REVERSE_LOOKUP);
+
+        mEnableForwardLookup.setOnPreferenceChangeListener(this);
+        mEnablePeopleLookup.setOnPreferenceChangeListener(this);
+        mEnableReverseLookup.setOnPreferenceChangeListener(this);
+
+        restoreLookupProviderSwitches();
+
+        mChooseForwardLookupProvider = (ListPreference)
+                findPreference(BUTTON_CHOOSE_FORWARD_LOOKUP_PROVIDER);
+        mChoosePeopleLookupProvider = (ListPreference)
+                findPreference(BUTTON_CHOOSE_PEOPLE_LOOKUP_PROVIDER);
+        mChooseReverseLookupProvider = (ListPreference)
+                findPreference(BUTTON_CHOOSE_REVERSE_LOOKUP_PROVIDER);
+
+        mChooseForwardLookupProvider.setOnPreferenceChangeListener(this);
+        mChoosePeopleLookupProvider.setOnPreferenceChangeListener(this);
+        mChooseReverseLookupProvider.setOnPreferenceChangeListener(this);
+
+        restoreLookupProviders();
 
         // create intent to bring up contact list
         mContactListIntent = new Intent(Intent.ACTION_GET_CONTENT);
