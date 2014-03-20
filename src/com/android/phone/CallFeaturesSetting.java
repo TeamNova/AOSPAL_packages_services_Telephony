@@ -184,9 +184,6 @@ public class CallFeaturesSetting extends PreferenceActivity
     private static final String BUTTON_HAC_KEY         = "button_hac_key";
     private static final String BUTTON_NOISE_SUPPRESSION_KEY = "button_noise_suppression_key";
 
-    private static final String BUTTON_ENABLE_SUGGESTIONS = "button_enable_suggestions";
-    private static final String BUTTON_ENABLE_REVERSE_LOOKUP = "button_enable_reverse_lookup";
-
     private static final String BUTTON_GSM_UMTS_OPTIONS = "button_gsm_more_expand_key";
     private static final String BUTTON_CDMA_OPTIONS = "button_cdma_more_expand_key";
 
@@ -304,10 +301,8 @@ public class CallFeaturesSetting extends PreferenceActivity
     private SipSharedPreferences mSipSharedPreferences;
     private CheckBoxPreference mNonIntrusiveInCall;
     private ListPreference mFlipAction;
-    private CheckBoxPreference mEnableSuggestions;
     private CheckBoxPreference mEnableForwardLookup;
     private CheckBoxPreference mEnablePeopleLookup;
-    private CheckBoxPreference mEnableReverseLookup;
     private ListPreference mChooseForwardLookupProvider;
     private ListPreference mChoosePeopleLookupProvider;
     private ListPreference mChooseReverseLookupProvider;
@@ -581,14 +576,6 @@ public class CallFeaturesSetting extends PreferenceActivity
             Settings.System.putInt(getContentResolver(), Settings.System.NON_INTRUSIVE_INCALL,
                     mNonIntrusiveInCall.isChecked() ? 1 : 0);
             return true;
-        } else if (preference == mEnableSuggestions){
-            Settings.System.putInt(getContentResolver(), Settings.System.ENABLE_DIALER_SUGGESTIONS,
-                    mEnableSuggestions.isChecked() ? 1 : 0);
-            return true;
-        } else if (preference == mEnableReverseLookup){
-            Settings.System.putInt(getContentResolver(), Settings.System.ENABLE_DIALER_REVERSE_LOOKUP,
-                    mEnableReverseLookup.isChecked() ? 1 : 0);
-            return true;
         }
         return false;
     }
@@ -656,19 +643,8 @@ public class CallFeaturesSetting extends PreferenceActivity
             }
         } else if (preference == mButtonSipCallOptions) {
             handleSipCallOptionsChange(objValue);
-<<<<<<< HEAD
         }else if (preference == mFlipAction) {
             updateFlipActionSummary((String) objValue);
-=======
-        } else if (preference == mEnableForwardLookup
-                || preference == mEnablePeopleLookup
-                || preference == mEnableReverseLookup) {
-            saveLookupProviderSwitch(preference, (Boolean) objValue);
-        } else if (preference == mChooseForwardLookupProvider
-                || preference == mChoosePeopleLookupProvider
-                || preference == mChooseReverseLookupProvider) {
-            saveLookupProviderSetting(preference, (String) objValue);
->>>>>>> PA/kitkat
         }
         // always let the preference setting proceed.
         return true;
@@ -1743,45 +1719,9 @@ public class CallFeaturesSetting extends PreferenceActivity
             }
         }
 
-<<<<<<< HEAD
         mNonIntrusiveInCall = (CheckBoxPreference) findPreference(BUTTON_NON_INTRUSIVE_INCALL_KEY);
         mNonIntrusiveInCall.setChecked(Settings.System.getInt(getContentResolver(),
                 Settings.System.NON_INTRUSIVE_INCALL, 1) == 0 ? false : true);
-
-        mEnableSuggestions = (CheckBoxPreference) findPreference(BUTTON_ENABLE_SUGGESTIONS);
-        mEnableSuggestions.setChecked(Settings.System.getInt(getContentResolver(),
-                Settings.System.ENABLE_DIALER_SUGGESTIONS, 1) == 0 ? false : true);
-
-        mEnableReverseLookup = (CheckBoxPreference) findPreference(BUTTON_ENABLE_REVERSE_LOOKUP);
-        mEnableReverseLookup.setChecked(Settings.System.getInt(getContentResolver(),
-                Settings.System.ENABLE_DIALER_REVERSE_LOOKUP, 1) == 0 ? false : true);
-=======
-        mEnableForwardLookup = (CheckBoxPreference)
-                findPreference(SWITCH_ENABLE_FORWARD_LOOKUP);
-        mEnablePeopleLookup = (CheckBoxPreference)
-                findPreference(SWITCH_ENABLE_PEOPLE_LOOKUP);
-        mEnableReverseLookup = (CheckBoxPreference)
-                findPreference(SWITCH_ENABLE_REVERSE_LOOKUP);
-
-        mEnableForwardLookup.setOnPreferenceChangeListener(this);
-        mEnablePeopleLookup.setOnPreferenceChangeListener(this);
-        mEnableReverseLookup.setOnPreferenceChangeListener(this);
-
-        restoreLookupProviderSwitches();
-
-        mChooseForwardLookupProvider = (ListPreference)
-                findPreference(BUTTON_CHOOSE_FORWARD_LOOKUP_PROVIDER);
-        mChoosePeopleLookupProvider = (ListPreference)
-                findPreference(BUTTON_CHOOSE_PEOPLE_LOOKUP_PROVIDER);
-        mChooseReverseLookupProvider = (ListPreference)
-                findPreference(BUTTON_CHOOSE_REVERSE_LOOKUP_PROVIDER);
-
-        mChooseForwardLookupProvider.setOnPreferenceChangeListener(this);
-        mChoosePeopleLookupProvider.setOnPreferenceChangeListener(this);
-        mChooseReverseLookupProvider.setOnPreferenceChangeListener(this);
-
-        restoreLookupProviders();
->>>>>>> PA/kitkat
 
         // create intent to bring up contact list
         mContactListIntent = new Intent(Intent.ACTION_GET_CONTENT);
